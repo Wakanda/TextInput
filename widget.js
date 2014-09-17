@@ -20,9 +20,16 @@ WAF.define('TextInput', ['waf-core/widget'], function(widget) {
 
     var TextInput = widget.create('TextInput', {
         tagName: 'input',
-        value: widget.property({
+        value: widget.property({}),
+        editValue: widget.property({
+            type: 'string'
+        }),
+        displayValue: widget.property({
+            type: 'string'
+        }),
+        format: widget.property({
             type: 'string',
-            defaultValueCallback: attr('value')
+            bindable: false
         }),
         autocomplete: widget.property({
             type: 'boolean'
@@ -85,16 +92,141 @@ WAF.define('TextInput', ['waf-core/widget'], function(widget) {
             initAttribute(this, 'placeholder', '');
             initAttribute(this, 'readOnly', false);
             initAttribute(this, 'maxLength', null);
-            var subscriber = initAttribute(this, 'value', '');
+
+            var mode;
+
+            var valueSubscriber = this.value.onChange(function() {
+                valueSubscriber.pause();
+                this.editValue(this.formatEditValue(this.value()));
+                this.displayValue(this.formatDisplayValue(this.value()));
+                valueSubscriber.resume();
+            });
+            this.editValue.onChange(function() {
+                this.removeClass('waf-state-error');
+                try {
+                    if(!valueSubscriber.isPaused()) {
+                        this.value(this.unformatEditValue(this.editValue()));
+                    }
+                    if(this.hasFocus()) {
+                        this.node.value = this.editValue();
+                        mode = 'edit';
+                    }
+                } catch(error) {
+                    this.addClass('waf-state-error');
+                    this.fire('error', { error: error, value: this.editValue() });
+                    mode = 'error';
+                }
+            });
+            this.displayValue.onChange(function() {
+                if(!this.hasFocus()) {
+                    this.node.value = this.displayValue();
+                    mode = 'display';
+                }
+            });
 
             $(this.node).on('change autocompleteselect change', function(event, ui) {
-                subscriber.pause();
-                this.value(ui && 'item' in ui ? ui.item.value : this.node.value);
-                subscriber.resume();
+                if(ui && 'item' in ui) {
+                    this.editValue(ui.item.value);
+                } else {
+                    if(mode === 'edit' || mode === 'error') {
+                        this.editValue(this.node.value);
+                    }
+                }
+            }.bind(this));
+
+            if(this.value() != null) {
+                if(this.value() === this.node.getAttribute('data-value')) {
+                    // the initial value come from the HTML, we asume that it's a formated value
+                    this.editValue(this.value());
+                } else {
+                    // the initial value come from the options passed to the init, we asume it's a raw value
+                    valueSubscriber.pause();
+                    this.editValue(this.formatEditValue(this.value()));
+                    this.displayValue(this.formatDisplayValue(this.value()));
+                    valueSubscriber.resume();
+                }
+            }
+
+            $(this.node).on('focus', function(event) {
+                this.node.value = this.editValue();
+                mode = 'edit';
+            }.bind(this));
+
+            $(this.node).on('blur', function(event) {
+                if(mode === 'error') {
+                    return;
+                }
+                this.node.value = this.displayValue();
+                mode = 'display';
             }.bind(this));
 
             this._setupAutocomplete();
             this.subscribe('datacourseBindingChange', 'value', this._setupAutocomplete, this);
+        },
+        hasFocus: function() {
+            return document.activeElement === this.node;
+        },
+        formatEditValue: function(value) {
+            if(value == null) {
+                return '';
+            }
+            switch(this.getType()) {
+                case 'String':
+                    return value;
+                case 'Number':
+                    return WAF.utils.formatNumber(value, { format: this.numberEditFormat() });
+                default:
+                    var formatter = 'format' + this.getType();
+                    if (formatter in WAF.utils) {
+                        return WAF.utils[formatter](value, { format: this.format() });
+                    }
+            }
+            return '' + value;
+        },
+        unformatEditValue: function(value) {
+            var parser = 'parse' + this.getType();
+            if (parser in WAF.utils) {
+                return WAF.utils[parser](value, this.format());
+            }
+            return '' + value;
+        },
+        formatDisplayValue: function(value) {
+            if(value == null) {
+                return '';
+            }
+            var formatter = 'format' + this.getType();
+            if (formatter in WAF.utils) {
+                return WAF.utils[formatter](value, { format: this.format() });
+            }
+            return '' + value;
+        },
+        numberEditFormat: function() {
+            // remove prefix and suffix from number format
+            var result = /[^#0,.]*([#0,.%]+).*/.exec(this.format());
+            if(result) {
+                return result[1];
+            }
+            return this.format();
+        },
+        getType: function() {
+            var binding = this.value.boundDatasource();
+            if(!binding || !binding.valid) {
+                return;
+            }
+            switch(binding.datasource.getAttribute(binding.attribute).type) {
+                case "long":
+                case "number":
+                case "float":
+                case "long":
+                case "byte":
+                case "word":
+                case "long64":
+                    return 'Number';
+                case "string":
+                    return "String";
+                case "date":
+                    return "Date";
+            }
         }
     });
 

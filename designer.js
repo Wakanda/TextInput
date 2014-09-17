@@ -6,11 +6,16 @@
 
     TextInput.addLabel();
 
+    TextInput.customizeProperty('editValue', { display: false, sourceDisplay: false });
+    TextInput.customizeProperty('displayValue', { display: false, sourceDisplay: false });
+
     var showAutocomplete = function() {
         if(this.value.boundDatasource()) {
             this.autocomplete.show();
+            this.format.show();
         } else {
             this.autocomplete.hide();
+            this.format.hide();
         }
     };
 
