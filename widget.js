@@ -128,7 +128,7 @@ WAF.define('TextInput', ['waf-core/widget'], function(widget) {
                 if(ui && 'item' in ui) {
                     this.editValue(ui.item.value);
                 } else {
-                    if(mode === 'edit' || mode === 'error') {
+                    if(mode === 'edit' || mode === 'error') {
                         this.editValue(this.node.value);
                     }
                 }
