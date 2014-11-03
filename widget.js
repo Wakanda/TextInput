@@ -205,7 +205,7 @@ WAF.define('TextInput', ['waf-core/widget'], function(widget) {
             // remove prefix and suffix from number format
             var result = /[^#0,.]*([#0,.%]+).*/.exec(this.format());
             if(result) {
-                return result[1];
+                return result[1].replace(',', '');
             }
             return this.format();
         },
