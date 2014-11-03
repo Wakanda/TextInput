@@ -1,7 +1,7 @@
 {
     "name": "TextInput",
     "studioName": "TextInput",
-    "category": "Custom Widgets",
+    "category": "Wakanda",
     "iconPath": "/icons/widget.png",
     "author": "stephane.puybareau@4d.com",
     "version": "1.0.0",
