@@ -21,6 +21,9 @@ WAF.define('TextInput', ['waf-core/widget'], function(widget) {
     var TextInput = widget.create('TextInput', {
         tagName: 'input',
         value: widget.property({}),
+        defaultValue: widget.property({
+            type: 'string'
+        }),
         editValue: widget.property({
             type: 'string'
         }),
@@ -32,27 +35,24 @@ WAF.define('TextInput', ['waf-core/widget'], function(widget) {
             bindable: false
         }),
         autocomplete: widget.property({
-            type: 'boolean'
+            type: 'boolean',
+            bindable: false
         }),
         placeholder: widget.property({
             type: 'string',
-            defaultValueCallback: attr('placeholder'),
             bindable: false
         }),
         readOnly: widget.property({
             type: 'boolean',
-            defaultValueCallback: attr('readOnly'),
             bindable: false
         }),
         inputType: widget.property({
             type: 'enum',
-            values: ['text', 'password'], //, 'search', 'email', 'url', 'tel'],
-            defaultValueCallback: attr('type'),
+            values: ['text', 'password', 'search', 'email', 'url', 'tel'],
             bindable: false
         }),
         maxLength: widget.property({
             type: 'integer',
-            defaultValueCallback: attr('maxLength'),
             bindable: false
         }),
         _setupAutocomplete: function() {
@@ -81,10 +81,83 @@ WAF.define('TextInput', ['waf-core/widget'], function(widget) {
                                 "$filter"   : '"' + att.name + '=:1' + '"',
                                 "$params"   : "'" + JSON.stringify([request.term + '*']) + "'"
                             },
-                            success: function(data){ response(data); }
+                            success: function(data){
+                                response($.map(data, function(item){
+                                    return {
+                                        value: item
+                                    }
+                                }));
+                            }
                         });
                     }
                 });
+            }
+        },
+        hasFocus: function() {
+            return document.activeElement === this.node;
+        },
+        formatEditValue: function(value) {
+            if(value == null) {
+                return '';
+            }
+            switch(this.getType()) {
+                case 'String':
+                    return value;
+                case 'Number':
+                    return WAF.utils.formatNumber(value, { format: this.numberEditFormat() });
+                default:
+                    var formatter = 'format' + this.getType();
+                    if (formatter in WAF.utils) {
+                        return WAF.utils[formatter](value, { format: this.format() });
+                    }
+            }
+            return '' + value;
+        },
+        unformatEditValue: function(value) {
+            var parser = 'parse' + this.getType();
+            if (parser in WAF.utils) {
+                return WAF.utils[parser](value, this.format());
+            }
+            return '' + value;
+        },
+        formatDisplayValue: function(value) {
+            if(value == null) {
+                return '';
+            }
+            var formatter = 'format' + this.getType();
+            if (formatter in WAF.utils) {
+                return WAF.utils[formatter](value, { format: this.format() });
+            }else{
+                return WAF.utils.formatString(value,this.format());
+            }
+            return '' + value;
+        },
+        numberEditFormat: function() {
+            // remove prefix and suffix from number format
+            var result = /[^#0,.]*([#0,.%]+).*/.exec(this.format());
+            if(result) {
+                return result[1];
+            }
+            return this.format();
+        },
+        getType: function() {
+            var binding = this.value.boundDatasource();
+            if(!binding || !binding.valid) {
+                return;
+            }
+            switch(binding.datasource.getAttribute(binding.attribute).type) {
+                case "long":
+                case "number":
+                case "float":
+                case "long":
+                case "byte":
+                case "word":
+                case "long64":
+                    return 'Number';
+                case "string":
+                    return "String";
+                case "date":
+                    return "Date";
             }
         },
         init: function() {
@@ -134,6 +207,8 @@ WAF.define('TextInput', ['waf-core/widget'], function(widget) {
                 }
             }.bind(this));
 
+            $(this.node).addClass('form-control')
+
             if(this.value() != null) {
                 if(this.value() === this.node.getAttribute('data-value')) {
                     // the initial value come from the HTML, we asume that it's a formated value
@@ -143,9 +218,10 @@ WAF.define('TextInput', ['waf-core/widget'], function(widget) {
                     valueSubscriber.pause();
                     this.editValue(this.formatEditValue(this.value()));
                     this.displayValue(this.formatDisplayValue(this.value()));
-                    this.node.value = this.displayValue();
                     valueSubscriber.resume();
                 }
+            }else if(this.defaultValue()){
+                this.value(this.defaultValue());
             }
 
             $(this.node).on('focus', function(event) {
@@ -163,71 +239,6 @@ WAF.define('TextInput', ['waf-core/widget'], function(widget) {
 
             this._setupAutocomplete();
             this.subscribe('datacourseBindingChange', 'value', this._setupAutocomplete, this);
-        },
-        hasFocus: function() {
-            return document.activeElement === this.node;
-        },
-        formatEditValue: function(value) {
-            if(value == null) {
-                return '';
-            }
-            switch(this.getType()) {
-                case 'String':
-                    return value;
-                case 'Number':
-                    return WAF.utils.formatNumber(value, { format: this.numberEditFormat() });
-                default:
-                    var formatter = 'format' + this.getType();
-                    if (formatter in WAF.utils) {
-                        return WAF.utils[formatter](value, { format: this.format() });
-                    }
-            }
-            return '' + value;
-        },
-        unformatEditValue: function(value) {
-            var parser = 'parse' + this.getType();
-            if (parser in WAF.utils) {
-                return WAF.utils[parser](value, this.format());
-            }
-            return '' + value;
-        },
-        formatDisplayValue: function(value) {
-            if(value == null) {
-                return '';
-            }
-            var formatter = 'format' + this.getType();
-            if (formatter in WAF.utils) {
-                return WAF.utils[formatter](value, { format: this.format() || '' });
-            }
-            return '' + value;
-        },
-        numberEditFormat: function() {
-            // remove prefix and suffix from number format
-            var result = /[^#0,.]*([#0,.%]+).*/.exec(this.format());
-            if(result) {
-                return result[1].replace(',', '');
-            }
-            return this.format();
-        },
-        getType: function() {
-            var binding = this.value.boundDatasource();
-            if(!binding || !binding.valid) {
-                return;
-            }
-            switch(binding.datasource.getAttribute(binding.attribute).type) {
-                case "long":
-                case "number":
-                case "float":
-                case "long":
-                case "byte":
-                case "word":
-                case "long64":
-                    return 'Number';
-                case "string":
-                    return "String";
-                case "date":
-                    return "Date";
-            }
         }
     });
 
