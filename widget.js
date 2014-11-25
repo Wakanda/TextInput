@@ -55,6 +55,9 @@ WAF.define('TextInput', ['waf-core/widget'], function(widget) {
             type: 'integer',
             bindable: false
         }),
+        addTabIndex : function() {
+
+        },
         _setupAutocomplete: function() {
             var bound = this.value.boundDatasource();
             if(!bound || !bound.valid || !this.autocomplete()) {
