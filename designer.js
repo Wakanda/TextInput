@@ -4,6 +4,8 @@
     TextInput.setWidth(92);
     TextInput.setHeight(22);
 
+    TextInput.addEvents('hover', 'focus', 'disabled');
+
     TextInput.addEvents({ 
         'name':'action' 
     },{ 
