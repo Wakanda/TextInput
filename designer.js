@@ -8,10 +8,10 @@
         'name':'action' 
     },{ 
         'name':'blur',
-        'Focus':'Focus Events'
+        'category':'Focus Events'
     },{ 
         'name':'focus',
-        'Focus':'Focus Events'
+        'category':'Focus Events'
     },{ 
         'name':'click', 
         'category':'Mouse Events' 
