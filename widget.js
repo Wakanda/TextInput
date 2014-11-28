@@ -20,7 +20,9 @@ WAF.define('TextInput', ['waf-core/widget'], function(widget) {
 
     var TextInput = widget.create('TextInput', {
         tagName: 'input',
-        value: widget.property({}),
+        value: widget.property({
+            type: 'string'
+        }),
         defaultValue: widget.property({
             type: 'string'
         }),
