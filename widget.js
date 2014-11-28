@@ -164,10 +164,6 @@ WAF.define('TextInput', ['waf-core/widget'], function(widget) {
             }
         },
         init: function() {
-            this.style({
-                'box-sizing' : '',
-                'cursor' : ''
-            });
             initAttribute(this, 'inputType', 'text', 'type');
             initAttribute(this, 'placeholder', '');
             initAttribute(this, 'readOnly', false);
