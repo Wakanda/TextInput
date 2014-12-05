@@ -1,10 +1,15 @@
 (function(TextInput) {
     "use strict";
 
-    TextInput.setWidth(92);
-    TextInput.setHeight(22);
+    if(Designer && Designer.isMobile){
+        TextInput.setWidth(130);
+        TextInput.setHeight(40);
+    }else{
+        TextInput.setWidth(130);
+        TextInput.setHeight(22);
+    }
 
-    TextInput.addEvents('hover', 'focus', 'disabled');
+    TextInput.addEvents('focus');
 
     TextInput.addEvents({ 
         'name':'action' 
@@ -66,6 +71,10 @@
 
     TextInput.customizeProperty('editValue', { display: false, sourceDisplay: false });
     TextInput.customizeProperty('displayValue', { display: false, sourceDisplay: false });
+    TextInput.customizeProperty('readOnly', {title: 'Read only'});
+    TextInput.customizeProperty('defaultValue', {title: 'Default value'});
+    TextInput.customizeProperty('inputType', {title: 'Input type'});
+    TextInput.customizeProperty('maxLength', {title: 'Max length'});
 
     var showAutocomplete = function() {
         if(this.value.boundDatasource()) {
@@ -75,10 +84,19 @@
         }
     };
 
+    function showValue(){
+        var dsValue = this.value.boundDatasource()
+        if(dsValue && dsValue.datasourceName){
+            this.value('['+dsValue+']');
+        }
+    }
+    
     TextInput.doAfter('init', function() {
         showAutocomplete.call(this);
+        showValue.call(this);
         this.value.onChange(showAutocomplete);
         this.subscribe('datasourceBindingChange', 'value', showAutocomplete, this);
+        this.subscribe('datasourceBindingChange','value', showValue, this);
 
         this.defaultValue.onChange(function(){
             if(!this.value()){
@@ -87,7 +105,7 @@
         });
     });
 
-    TextInput.customizeProperty('readOnly', {title: 'Read Only'});
+
 
     TextInput.setPanelStyle({
         'fClass': true, //This property is for the design panel
