@@ -197,7 +197,11 @@ WAF.define('TextInput', ['waf-core/widget'], function(widget) {
             });
             this.displayValue.onChange(function() {
                 if(!this.hasFocus()) {
+                    this.value(this.displayValue());
                     this.node.value = this.displayValue();
+                    $(this.node).attr('value',this.displayValue());
+                    $(this.node).attr('data-value',this.displayValue());
+                    $(this.node).attr('data-displayvalue',this.displayValue());
                     mode = 'display';
                 }
             });
