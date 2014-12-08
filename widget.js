@@ -50,7 +50,14 @@ WAF.define('TextInput', ['waf-core/widget'], function(widget) {
         }),
         inputType: widget.property({
             type: 'enum',
-            values: ['text', 'password', 'search', 'email', 'url', 'tel'],
+            values: {
+                'text':               'text',
+                'password':           'password',
+                'search':             'search',
+                'email':              'email',
+                'url':                'url',
+                'tel':                'telephone'
+            },
             bindable: false
         }),
         maxLength: widget.property({
