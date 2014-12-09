@@ -85,7 +85,7 @@
     };
 
     function showValue(){
-        var dsValue = this.value.boundDatasource()
+        var dsValue = this.value.boundDatasource();
         if(dsValue && dsValue.datasourceName){
             this.value('['+dsValue+']');
         }

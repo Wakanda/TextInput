@@ -177,7 +177,8 @@ WAF.define('TextInput', ['waf-core/widget'], function(widget) {
             initAttribute(this, 'placeholder', '');
             initAttribute(this, 'readOnly', false);
             initAttribute(this, 'maxLength', null);
-
+            this.node.value = this.displayValue();
+            
             var mode;
 
             var valueSubscriber = this.value.onChange(function() {
@@ -223,7 +224,7 @@ WAF.define('TextInput', ['waf-core/widget'], function(widget) {
                 }
             }.bind(this));
 
-            $(this.node).addClass('form-control')
+            $(this.node).addClass('form-control');
 
             if(this.value() != null) {
                 if(this.value() === this.node.getAttribute('data-value')) {
