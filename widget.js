@@ -64,6 +64,14 @@ WAF.define('TextInput', ['waf-core/widget'], function(widget) {
             type: 'integer',
             bindable: false
         }),
+        disable: function() {
+           this.$super('disable')();
+           this.node.disabled = true;
+        },
+        enable: function() {
+           this.$super('enable')();
+           this.node.disabled = false;
+        },
         addTabIndex : function() {
 
         },
