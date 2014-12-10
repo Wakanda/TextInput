@@ -1,19 +1,24 @@
 {
     "name": "TextInput",
-    "studioName": "TextInput",
+    "studioName": "Text Input",
     "category": "Form Controls",
     "type": "widget",
     "iconPath": "/icons/widget.png",
-    "author": "stephane.puybareau@4d.com",
     "version": "1.0.0",
-    "copyright": "(c) 2014 4D",
+    "author": "4D SAS",
+    "contributors": [
+        "Stéphane Puybareau",
+        "Sébastien Lombard",
+        "Jonathan Argentiero"
+    ],
+    "copyright": "(c) 2014 4D SAS",
     "repository": {
         "type": "git",
-        "url": "https://github.com/Puyb4D/TextInput.git"
+        "url": "https://github.com/Wakanda/TextInput.git"
     },
     "keywords": ["wakanda", "widget"],
     "engines": {
-        "wakanda": ">= 9"
+        "wakanda": ">= 11"
     },
     "license": "MIT",
     "externalWidgets": [],

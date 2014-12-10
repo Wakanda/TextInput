@@ -9,7 +9,7 @@
         TextInput.setHeight(22);
     }
 
-    TextInput.addEvents('focus');
+    TextInput.addStates('hover', 'focus', 'disabled');
 
     TextInput.addEvents({ 
         'name':'action' 
@@ -72,7 +72,6 @@
     TextInput.customizeProperty('editValue', { display: false, sourceDisplay: false });
     TextInput.customizeProperty('displayValue', { display: false, sourceDisplay: false });
     TextInput.customizeProperty('readOnly', {title: 'Read only'});
-    TextInput.customizeProperty('defaultValue', {title: 'Default value'});
     TextInput.customizeProperty('inputType', {title: 'Input type'});
     TextInput.customizeProperty('maxLength', {title: 'Max length'});
 
@@ -88,6 +87,8 @@
         var dsValue = this.value.boundDatasource();
         if(dsValue && dsValue.datasourceName){
             this.value('['+dsValue+']');
+        }else if(!dsValue){
+            this.value('');
         }
     }
     
@@ -98,11 +99,6 @@
         this.subscribe('datasourceBindingChange', 'value', showAutocomplete, this);
         this.subscribe('datasourceBindingChange','value', showValue, this);
 
-        this.defaultValue.onChange(function(){
-            if(!this.value()){
-                this.value(this.defaultValue());
-            }
-        });
     });
 
 
@@ -116,7 +112,6 @@
         'background': true,
         'border': true,
         'sizePosition': true,
-        'label': true,
-        'disabled': ['border-radius']
+        'label': true
     });
 });

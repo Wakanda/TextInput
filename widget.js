@@ -23,9 +23,6 @@ WAF.define('TextInput', ['waf-core/widget'], function(widget) {
         value: widget.property({
             type: 'string'
         }),
-        defaultValue: widget.property({
-            type: 'string'
-        }),
         editValue: widget.property({
             type: 'string'
         }),
@@ -181,6 +178,10 @@ WAF.define('TextInput', ['waf-core/widget'], function(widget) {
             }
         },
         init: function() {
+            // bootstrap class
+            $(this.node).addClass('form-control');
+
+            // init
             initAttribute(this, 'inputType', 'text', 'type');
             initAttribute(this, 'placeholder', '');
             initAttribute(this, 'readOnly', false);
@@ -195,6 +196,7 @@ WAF.define('TextInput', ['waf-core/widget'], function(widget) {
                 this.displayValue(this.formatDisplayValue(this.value()));
                 valueSubscriber.resume();
             });
+
             this.editValue.onChange(function() {
                 this.removeClass('waf-state-error');
                 try {
@@ -211,6 +213,7 @@ WAF.define('TextInput', ['waf-core/widget'], function(widget) {
                     mode = 'error';
                 }
             });
+
             this.displayValue.onChange(function() {
                 if(!this.hasFocus()) {
                     this.value(this.displayValue());
@@ -232,8 +235,8 @@ WAF.define('TextInput', ['waf-core/widget'], function(widget) {
                 }
             }.bind(this));
 
-            $(this.node).addClass('form-control');
 
+            // init value
             if(this.value() != null) {
                 if(this.value() === this.node.getAttribute('data-value')) {
                     // the initial value come from the HTML, we asume that it's a formated value
@@ -245,8 +248,6 @@ WAF.define('TextInput', ['waf-core/widget'], function(widget) {
                     this.displayValue(this.formatDisplayValue(this.value()));
                     valueSubscriber.resume();
                 }
-            }else if(this.defaultValue()){
-                this.value(this.defaultValue());
             }
 
             $(this.node).on('focus', function(event) {
