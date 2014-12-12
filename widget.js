@@ -69,9 +69,6 @@ WAF.define('TextInput', ['waf-core/widget'], function(widget) {
            this.$super('enable')();
            this.node.disabled = false;
         },
-        addTabIndex : function() {
-
-        },
         _setupAutocomplete: function() {
             var bound = this.value.boundDatasource();
             if(!bound || !bound.valid || !this.autocomplete()) {
@@ -268,6 +265,8 @@ WAF.define('TextInput', ['waf-core/widget'], function(widget) {
         }
     });
 
+    TextInput.addTabIndex();
+    
     return TextInput;
 
 });
