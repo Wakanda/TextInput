@@ -67,7 +67,7 @@
         'category':'Touch Events'
     });
 
-    TextInput.addLabel({ defaultValue: '', description: 'Label for widget' });
+    TextInput.addLabel({ defaultValue: 'Label', description: 'Label for widget' });
 
     TextInput.customizeProperty('editValue', { display: false, sourceDisplay: false });
     TextInput.customizeProperty('displayValue', { display: false, sourceDisplay: false });
@@ -100,8 +100,6 @@
         this.subscribe('datasourceBindingChange','value', showValue, this);
 
     });
-
-
 
     TextInput.setPanelStyle({
         'fClass': true, //This property is for the design panel
