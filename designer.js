@@ -67,7 +67,7 @@
         'category':'Touch Events'
     });
 
-    TextInput.addLabel();
+    TextInput.addLabel({ defaultValue: '', description: 'Label for widget' });
 
     TextInput.customizeProperty('editValue', { display: false, sourceDisplay: false });
     TextInput.customizeProperty('displayValue', { display: false, sourceDisplay: false });

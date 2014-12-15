@@ -21,7 +21,8 @@ WAF.define('TextInput', ['waf-core/widget'], function(widget) {
     var TextInput = widget.create('TextInput', {
         tagName: 'input',
         value: widget.property({
-            type: 'string'
+            type: 'string',
+            description: 'Static text or datasource value'
         }),
         editValue: widget.property({
             type: 'string'
@@ -31,22 +32,27 @@ WAF.define('TextInput', ['waf-core/widget'], function(widget) {
         }),
         format: widget.property({
             type: 'string',
+            description: 'Format for the Value',
             bindable: false
         }),
         autocomplete: widget.property({
             type: 'boolean',
+            description: 'Autocomplete text if Value is a datasource',
             bindable: false
         }),
         placeholder: widget.property({
             type: 'string',
+            description: 'Placeholder text',
             bindable: false
         }),
         readOnly: widget.property({
             type: 'boolean',
+            description: 'Read only or read/write',
             bindable: false
         }),
         inputType: widget.property({
             type: 'enum',
+            description: 'Type of input widget',
             values: {
                 'text':               'text',
                 'password':           'password',
@@ -59,6 +65,7 @@ WAF.define('TextInput', ['waf-core/widget'], function(widget) {
         }),
         maxLength: widget.property({
             type: 'integer',
+            description: 'Maximum length allowed in widget',
             bindable: false
         }),
         disable: function() {
