@@ -55,6 +55,7 @@ WAF.define('TextInput', ['waf-core/widget'], function(widget) {
             description: 'Type of input widget',
             values: {
                 'text':               'text',
+                'number':             'number',
                 'password':           'password',
                 'search':             'search',
                 'email':              'email',
