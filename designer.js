@@ -73,7 +73,7 @@
     TextInput.customizeProperty('displayValue', { display: false, sourceDisplay: false });
     TextInput.customizeProperty('readOnly', {title: 'Read only'});
     TextInput.customizeProperty('inputType', {title: 'Input type'});
-    TextInput.customizeProperty('maxLength', {title: 'Max length'});
+    TextInput.customizeProperty('maxLength', {title: 'Maximum length (in characters) to input'});
 
     var showAutocomplete = function() {
         if(this.value.boundDatasource()) {

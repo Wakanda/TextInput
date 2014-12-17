@@ -190,6 +190,7 @@ WAF.define('TextInput', ['waf-core/widget'], function(widget) {
             initAttribute(this, 'placeholder', '');
             initAttribute(this, 'readOnly', false);
             initAttribute(this, 'maxLength', null);
+            this.value(this.displayValue());
             this.node.value = this.displayValue();
             
             var mode;
