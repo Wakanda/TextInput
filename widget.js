@@ -38,6 +38,7 @@ WAF.define('TextInput', ['waf-core/widget'], function(widget) {
         autocomplete: widget.property({
             type: 'boolean',
             description: 'Autocomplete text if Value is a datasource',
+            defaultValue: false,
             bindable: false
         }),
         placeholder: widget.property({
@@ -48,6 +49,7 @@ WAF.define('TextInput', ['waf-core/widget'], function(widget) {
         readOnly: widget.property({
             type: 'boolean',
             description: 'Read only or read/write',
+            defaultValue: false,
             bindable: false
         }),
         inputType: widget.property({
@@ -197,7 +199,7 @@ WAF.define('TextInput', ['waf-core/widget'], function(widget) {
             initAttribute(this, 'placeholder', '');
             initAttribute(this, 'readOnly', false);
             initAttribute(this, 'maxLength', null);     
-            this.render();       
+            this.render();      
 
             // bootstrap class
             $(this.node).addClass('form-control');
