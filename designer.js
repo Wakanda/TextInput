@@ -73,7 +73,7 @@
     TextInput.customizeProperty('displayValue', { display: false, sourceDisplay: false });
     TextInput.customizeProperty('readOnly', {title: 'Read only'});
     TextInput.customizeProperty('inputType', {title: 'Input type'});
-    TextInput.customizeProperty('maxLength', {title: 'Maximum length (in characters) to input'});
+    TextInput.customizeProperty('maxLength', {title: 'Max length'});
 
     var showAutocomplete = function() {
         if(this.value.boundDatasource()) {
@@ -93,6 +93,7 @@
     }
     
     TextInput.doAfter('init', function() {
+        this._formatter = false;
         showAutocomplete.call(this);
         showValue.call(this);
         this.value.onChange(showAutocomplete);

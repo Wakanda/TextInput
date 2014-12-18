@@ -65,7 +65,7 @@ WAF.define('TextInput', ['waf-core/widget'], function(widget) {
         }),
         maxLength: widget.property({
             type: 'integer',
-            description: 'Maximum length allowed in widget',
+            description: 'Maximum length (in characters) to input',
             bindable: false
         }),
         disable: function() {
@@ -142,14 +142,16 @@ WAF.define('TextInput', ['waf-core/widget'], function(widget) {
             return '' + value;
         },
         formatDisplayValue: function(value) {
-            if(value == null) {
-                return '';
-            }
-            var formatter = 'format' + this.getType();
-            if (formatter in WAF.utils) {
-                return WAF.utils[formatter](value, { format: this.format() });
-            }else{
-                return WAF.utils.formatString(value,this.format());
+            if(this._formatter && this.format()){
+                if(value == null) {
+                    return '';
+                }
+                var formatter = 'format' + this.getType();
+                if (formatter in WAF.utils) {
+                    return WAF.utils[formatter](value, { format: this.format() });
+                }else{
+                    return WAF.utils.formatString(value,this.format());
+                }
             }
             return '' + value;
         },
@@ -182,17 +184,21 @@ WAF.define('TextInput', ['waf-core/widget'], function(widget) {
             }
         },
         init: function() {
-            // bootstrap class
-            $(this.node).addClass('form-control');
-
             // init
+            this._formatter = true;
             initAttribute(this, 'inputType', 'text', 'type');
             initAttribute(this, 'placeholder', '');
             initAttribute(this, 'readOnly', false);
             initAttribute(this, 'maxLength', null);
-            this.value(this.displayValue());
+            this.displayValue(this.formatDisplayValue(this.value()));
             this.node.value = this.displayValue();
-            
+            $(this.node).attr('value',this.displayValue());
+            $(this.node).attr('data-value',this.value());
+            $(this.node).attr('data-displayvalue',this.displayValue());
+
+            // bootstrap class
+            $(this.node).addClass('form-control');
+
             var mode;
 
             var valueSubscriber = this.value.onChange(function() {
@@ -221,10 +227,9 @@ WAF.define('TextInput', ['waf-core/widget'], function(widget) {
 
             this.displayValue.onChange(function() {
                 if(!this.hasFocus()) {
-                    this.value(this.displayValue());
                     this.node.value = this.displayValue();
                     $(this.node).attr('value',this.displayValue());
-                    $(this.node).attr('data-value',this.displayValue());
+                    $(this.node).attr('data-value',this.value());
                     $(this.node).attr('data-displayvalue',this.displayValue());
                     mode = 'display';
                 }
