@@ -211,6 +211,10 @@ WAF.define('TextInput', ['waf-core/widget'], function(widget) {
                 valueSubscriber.resume();
             });
 
+            this.format.onChange(function() {
+                this.render();
+            });
+
             this.editValue.onChange(function() {
                 this.removeClass('waf-state-error');
                 try {
