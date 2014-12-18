@@ -183,18 +183,21 @@ WAF.define('TextInput', ['waf-core/widget'], function(widget) {
                     return "Date";
             }
         },
+        render: function() {
+            this.displayValue(this.formatDisplayValue(this.value()));
+            this.node.value = this.displayValue();
+            $(this.node).attr('value',this.displayValue());
+            $(this.node).attr('data-value',this.value());
+            $(this.node).attr('data-displayvalue',this.displayValue());
+        },
         init: function() {
             // init
             this._formatter = true;
             initAttribute(this, 'inputType', 'text', 'type');
             initAttribute(this, 'placeholder', '');
             initAttribute(this, 'readOnly', false);
-            initAttribute(this, 'maxLength', null);
-            this.displayValue(this.formatDisplayValue(this.value()));
-            this.node.value = this.displayValue();
-            $(this.node).attr('value',this.displayValue());
-            $(this.node).attr('data-value',this.value());
-            $(this.node).attr('data-displayvalue',this.displayValue());
+            initAttribute(this, 'maxLength', null);     
+            this.render();       
 
             // bootstrap class
             $(this.node).addClass('form-control');
@@ -227,10 +230,7 @@ WAF.define('TextInput', ['waf-core/widget'], function(widget) {
 
             this.displayValue.onChange(function() {
                 if(!this.hasFocus()) {
-                    this.node.value = this.displayValue();
-                    $(this.node).attr('value',this.displayValue());
-                    $(this.node).attr('data-value',this.value());
-                    $(this.node).attr('data-displayvalue',this.displayValue());
+                    this.render();
                     mode = 'display';
                 }
             });

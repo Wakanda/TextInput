@@ -94,6 +94,7 @@
     
     TextInput.doAfter('init', function() {
         this._formatter = false;
+        this.render();
         this.node.type = 'text';
         showAutocomplete.call(this);
         showValue.call(this);
@@ -101,6 +102,7 @@
         this.inputType.onChange(function(){
             this.node.type = 'text';
         });
+
         this.subscribe('datasourceBindingChange', 'value', showAutocomplete, this);
         this.subscribe('datasourceBindingChange','value', showValue, this);
 
