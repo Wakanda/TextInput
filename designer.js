@@ -94,9 +94,13 @@
     
     TextInput.doAfter('init', function() {
         this._formatter = false;
+        this.node.type = 'text';
         showAutocomplete.call(this);
         showValue.call(this);
         this.value.onChange(showAutocomplete);
+        this.inputType.onChange(function(){
+            this.node.type = 'text';
+        });
         this.subscribe('datasourceBindingChange', 'value', showAutocomplete, this);
         this.subscribe('datasourceBindingChange','value', showValue, this);
 
