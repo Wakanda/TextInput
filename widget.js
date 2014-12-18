@@ -136,13 +136,6 @@ WAF.define('TextInput', ['waf-core/widget'], function(widget) {
             }
             return '' + value;
         },
-        unformatEditValue: function(value) {
-            var parser = 'parse' + this.getType();
-            if (parser in WAF.utils) {
-                return WAF.utils[parser](value, this.format());
-            }
-            return '' + value;
-        },
         formatDisplayValue: function(value) {
             if(value == null) {
                 return '';
@@ -186,6 +179,7 @@ WAF.define('TextInput', ['waf-core/widget'], function(widget) {
             }
         },
         render: function() {
+            this.editValue(this.value());
             this.displayValue(this.formatDisplayValue(this.value()));
             this.node.value = this.displayValue();
             $(this.node).attr('value',this.displayValue());
@@ -221,7 +215,7 @@ WAF.define('TextInput', ['waf-core/widget'], function(widget) {
                 this.removeClass('waf-state-error');
                 try {
                     if(!valueSubscriber.isPaused()) {
-                        this.value(this.unformatEditValue(this.editValue()));
+                        this.value(this.editValue());
                     }
                     if(this.hasFocus()) {
                         this.node.value = this.editValue();
@@ -251,21 +245,6 @@ WAF.define('TextInput', ['waf-core/widget'], function(widget) {
                 }
             }.bind(this));
 
-
-            // init value
-            if(this.value() != null) {
-                if(this.value() === this.node.getAttribute('data-value')) {
-                    // the initial value come from the HTML, we asume that it's a formated value
-                    this.editValue(this.value());
-                } else {
-                    // the initial value come from the options passed to the init, we asume it's a raw value
-                    valueSubscriber.pause();
-                    this.editValue(this.formatEditValue(this.value()));
-                    this.displayValue(this.formatDisplayValue(this.value()));
-                    valueSubscriber.resume();
-                }
-            }
-
             $(this.node).on('focus', function(event) {
                 this.node.value = this.editValue();
                 mode = 'edit';
@@ -275,7 +254,7 @@ WAF.define('TextInput', ['waf-core/widget'], function(widget) {
                 if(mode === 'error') {
                     return;
                 }
-                this.node.value = this.displayValue();
+                this.render();
                 mode = 'display';
             }.bind(this));
 
