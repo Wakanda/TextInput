@@ -139,7 +139,7 @@ WAF.define('TextInput', ['waf-core/widget'], function(widget) {
         formatDisplayValue: function(value) {
             if(value == null) {
                 return '';
-            }else if(!this.format()){
+            }else if(this._formatter && !this.format()){
                 var bound = this.value.boundDatasource();
                 if(bound && bound.datasource && bound.datasource.getClassAttributeByName(bound.attribute).defaultFormat) {
                     var defaultFormatter = 'format' + bound.datasource.getClassAttributeByName(bound.attribute).type.charAt(0).toUpperCase() + bound.datasource.getClassAttributeByName(bound.attribute).type.slice(1).toLowerCase();
@@ -149,15 +149,15 @@ WAF.define('TextInput', ['waf-core/widget'], function(widget) {
                         value = WAF.utils.formatString(value,bound.datasource.getClassAttributeByName(bound.attribute).defaultFormat.format);
                     }
                 }
-            }else if(this._formatter){
+            }else if(this._formatter && this.format()){
                 var formatter = 'format' + this.getType();
                 if (formatter in WAF.utils) {
-                    return WAF.utils[formatter](value, { format: this.format() });
+                    value = WAF.utils[formatter](value, { format: this.format() });
                 }else{
-                    return WAF.utils.formatString(value,this.format());
+                    value = WAF.utils.formatString(value,this.format());
                 }
             }
-            return '' + value;
+            return value;
         },
         numberEditFormat: function() {
             // remove prefix and suffix from number format
