@@ -139,8 +139,17 @@ WAF.define('TextInput', ['waf-core/widget'], function(widget) {
         formatDisplayValue: function(value) {
             if(value == null) {
                 return '';
-            }
-            if(this._formatter && this.format()){
+            }else if(!this.format()){
+                var bound = this.value.boundDatasource();
+                if(bound && bound.datasource && bound.datasource.getClassAttributeByName(bound.attribute).defaultFormat) {
+                    var defaultFormatter = 'format' + bound.datasource.getClassAttributeByName(bound.attribute).type.charAt(0).toUpperCase() + bound.datasource.getClassAttributeByName(bound.attribute).type.slice(1).toLowerCase();
+                    if (defaultFormatter in WAF.utils) {
+                        value = WAF.utils[defaultFormatter](value, { format: bound.datasource.getClassAttributeByName(bound.attribute).defaultFormat.format });
+                    }else{
+                        value = WAF.utils.formatString(value,bound.datasource.getClassAttributeByName(bound.attribute).defaultFormat.format);
+                    }
+                }
+            }else if(this._formatter){
                 var formatter = 'format' + this.getType();
                 if (formatter in WAF.utils) {
                     return WAF.utils[formatter](value, { format: this.format() });
