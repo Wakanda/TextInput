@@ -9,7 +9,7 @@
         TextInput.setHeight(22);
     }
 
-    TextInput.addStates('hover', 'focus', 'disabled');
+    TextInput.addStates(':hover', ':active', ':focus', ':disabled');
 
     TextInput.addEvents({ 
         'name':'action' 
