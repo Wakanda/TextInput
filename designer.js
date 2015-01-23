@@ -1,7 +1,7 @@
 (function(TextInput) {
     "use strict";
 
-    if(Designer && Designer.isMobile){
+    if(typeof Designer != 'undefined' && Designer.isMobile){
         TextInput.setWidth(130);
         TextInput.setHeight(40);
     }else{
