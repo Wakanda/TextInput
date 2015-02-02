@@ -86,8 +86,8 @@
     function showValue(){
         var dsValue = this.value.boundDatasource();
         if(dsValue && dsValue.datasourceName){
-            this.value('['+dsValue+']');
-        }else if(!dsValue){
+            this._dsValue = this.value('['+dsValue+']');
+        }else if(!dsValue && this._dsValue && this._dsValue == this.value()){
             this.value('');
         }
     }
