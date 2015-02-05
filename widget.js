@@ -24,12 +24,35 @@ WAF.define('TextInput', ['waf-core/widget'], function(widget) {
             type: 'string',
             description: 'Static text or datasource value'
         }),
-        editValue: widget.property({
-            type: 'string'
-        }),
-        displayValue: widget.property({
-            type: 'string'
-        }),
+        _mode : null,
+        _editValue : null,
+        editValue : function(value){
+            if(arguments.length > 0){
+                this._editValue = value;
+                this.removeClass('waf-textinput-state-error');
+                try {
+                    if(!this._valueSubscriber.isPaused()) {
+                        this.value(value);
+                    }
+                    if(this.hasFocus()) {
+                        this.node.value = value;
+                        this._mode = 'edit';
+                    }
+                } catch(error) {
+                    this.addClass('waf-textinput-state-error');
+                    this.fire('error', { error: error, value: value });
+                    this._mode = 'error';
+                }
+            }
+            return this._editValue;
+        },
+        _displayValue : null,
+        displayValue : function(value){
+            if(arguments.length > 0){
+                this._displayValue = value;
+            }
+            return this._displayValue;
+        },
         format: widget.property({
             type: 'string',
             description: 'Format for the Value',
@@ -190,13 +213,15 @@ WAF.define('TextInput', ['waf-core/widget'], function(widget) {
         render: function() {
             this.editValue(this.value());
             this.displayValue(this.formatDisplayValue(this.value()));
+            if(!this.hasFocus()) {
+                this._mode = 'display';
+            }
             this.node.value = this.displayValue();
             $(this.node).attr('value',this.displayValue());
             $(this.node).attr('data-value',this.value());
             $(this.node).attr('data-displayvalue',this.displayValue());
         },
         init: function() {
-            // init
             this._formatter = true;
             initAttribute(this, 'inputType', 'text', 'type');
             initAttribute(this, 'placeholder', '');
@@ -207,48 +232,23 @@ WAF.define('TextInput', ['waf-core/widget'], function(widget) {
             // bootstrap class
             $(this.node).addClass('form-control');
 
-            var mode;
-
-            var valueSubscriber = this.value.onChange(function() {
-                valueSubscriber.pause();
+            this._valueSubscriber = this.value.onChange(function() {
+                this._valueSubscriber.pause();
                 this.editValue(this.formatEditValue(this.value()));
                 this.displayValue(this.formatDisplayValue(this.value()));
-                valueSubscriber.resume();
+                this.render();
+                this._valueSubscriber.resume();
             });
 
             this.format.onChange(function() {
                 this.render();
             });
 
-            this.editValue.onChange(function() {
-                this.removeClass('waf-state-error');
-                try {
-                    if(!valueSubscriber.isPaused()) {
-                        this.value(this.editValue());
-                    }
-                    if(this.hasFocus()) {
-                        this.node.value = this.editValue();
-                        mode = 'edit';
-                    }
-                } catch(error) {
-                    this.addClass('waf-state-error');
-                    this.fire('error', { error: error, value: this.editValue() });
-                    mode = 'error';
-                }
-            });
-
-            this.displayValue.onChange(function() {
-                if(!this.hasFocus()) {
-                    this.render();
-                    mode = 'display';
-                }
-            });
-
             $(this.node).on('change autocompleteselect change', function(event, ui) {
                 if(ui && 'item' in ui) {
                     this.editValue(ui.item.value);
                 } else {
-                    if(mode === 'edit' || mode === 'error') {
+                    if(this._mode === 'edit' || this._mode === 'error') {
                         this.editValue(this.node.value);
                     }
                 }
@@ -256,7 +256,7 @@ WAF.define('TextInput', ['waf-core/widget'], function(widget) {
 
             $(this.node).on('focus', function(event) {
                 this.node.value = this.editValue();
-                mode = 'edit';
+                this._mode = 'edit';
             }.bind(this));
 
             $(this.node).on('blur', function(event) {
@@ -264,7 +264,7 @@ WAF.define('TextInput', ['waf-core/widget'], function(widget) {
                     return;
                 }
                 this.render();
-                mode = 'display';
+                this._mode = 'display';
             }.bind(this));
 
             this._setupAutocomplete();

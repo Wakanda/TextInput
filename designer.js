@@ -69,8 +69,6 @@
 
     TextInput.addLabel({ defaultValue: 'Label', description: 'Label for widget' });
 
-    TextInput.customizeProperty('editValue', { display: false, sourceDisplay: false });
-    TextInput.customizeProperty('displayValue', { display: false, sourceDisplay: false });
     TextInput.customizeProperty('readOnly', {title: 'Read only'});
     TextInput.customizeProperty('inputType', {title: 'Input type'});
     TextInput.customizeProperty('maxLength', {title: 'Max length'});
