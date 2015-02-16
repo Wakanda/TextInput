@@ -260,7 +260,7 @@ WAF.define('TextInput', ['waf-core/widget'], function(widget) {
             }.bind(this));
 
             $(this.node).on('blur', function(event) {
-                if(mode === 'error') {
+                if(this._mode === 'error') {
                     return;
                 }
                 this.render();
