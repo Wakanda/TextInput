@@ -95,11 +95,11 @@ WAF.define('TextInput', ['waf-core/widget'], function(widget) {
         }),
         disable: function() {
            this.$super('disable')();
-           this.node.disabled = true;
+           $(this.node).prop('disabled', true);
         },
         enable: function() {
            this.$super('enable')();
-           this.node.disabled = false;
+           $(this.node).prop('disabled', false);
         },
         _setupAutocomplete: function() {
             var bound = this.value.boundDatasource();
