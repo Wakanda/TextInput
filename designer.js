@@ -12,8 +12,6 @@
     TextInput.addStates(':hover', ':active', ':focus', ':disabled');
 
     TextInput.addEvents({ 
-        'name':'action' 
-    },{ 
         'name':'blur',
         'category':'Focus Events'
     },{ 
