@@ -25,10 +25,6 @@
     "loadDependencies": [{
         "id": "Widget_V2"
     }, {
-        "id": "TextInput/wak9.js",
-        "version": "1.0.0",
-        "path": "WIDGETS_CUSTOM"
-    }, {
         "id": "TextInput/widget.js",
         "version": "1.0.0",
         "path": "WIDGETS_CUSTOM"
