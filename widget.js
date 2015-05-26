@@ -12,12 +12,6 @@ WAF.define('TextInput', ['waf-core/widget'], function(widget) {
         });
     }
 
-    function attr(name) {
-        return function() {
-            return this.node[attr] || null;
-        };
-    }
-
     var TextInput = widget.create('TextInput', {
         tagName: 'input',
         value: widget.property({
@@ -131,7 +125,7 @@ WAF.define('TextInput', ['waf-core/widget'], function(widget) {
                                 response($.map(data, function(item){
                                     return {
                                         value: item
-                                    }
+                                    };
                                 }));
                             }
                         });
@@ -143,7 +137,7 @@ WAF.define('TextInput', ['waf-core/widget'], function(widget) {
             return document.activeElement === this.node;
         },
         formatEditValue: function(value) {
-            if(value == null) {
+            if(value === null) {
                 return '';
             }
             switch(this.getType()) {
@@ -160,7 +154,7 @@ WAF.define('TextInput', ['waf-core/widget'], function(widget) {
             return '' + value;
         },
         formatDisplayValue: function(value) {
-            if(value == null) {
+            if(value === null) {
                 return '';
             }else if(this._formatter && !this.format()){
                 var bound = this.value.boundDatasource();
@@ -177,7 +171,7 @@ WAF.define('TextInput', ['waf-core/widget'], function(widget) {
                 if (formatter in WAF.utils) {
                     value = WAF.utils[formatter](value, { format: this.format() });
                 }else{
-                    value = WAF.utils.formatString(value,this.format());
+                    value = WAF.utils.formatString(value, { format: this.format() });
                 }
             }
             return value;
@@ -226,8 +220,8 @@ WAF.define('TextInput', ['waf-core/widget'], function(widget) {
             initAttribute(this, 'inputType', 'text', 'type');
             initAttribute(this, 'placeholder', '');
             initAttribute(this, 'readOnly', false);
-            initAttribute(this, 'maxLength', null);     
-            this.render();      
+            initAttribute(this, 'maxLength', null);
+            this.render();
 
             // bootstrap class
             $(this.node).addClass('form-control');
@@ -244,7 +238,7 @@ WAF.define('TextInput', ['waf-core/widget'], function(widget) {
                 this.render();
             });
 
-            $(this.node).on('change autocompleteselect change', function(event, ui) {
+            $(this.node).on('change autocompleteselect input', function(event, ui) {
                 if(ui && 'item' in ui) {
                     this.editValue(ui.item.value);
                 } else {
@@ -273,7 +267,7 @@ WAF.define('TextInput', ['waf-core/widget'], function(widget) {
     });
 
     TextInput.addTabIndex();
-    
+
     return TextInput;
 
 });
